@@ -4,4 +4,5 @@ RUN mkdir /workspace
 WORKDIR /workspace
 ADD requirements.txt /workspace/
 RUN pip install -r requirements.txt
+RUN pip install mysqlclient
 ADD . /code/
