@@ -1,3 +1,5 @@
 .devcontainer
 mysql_data/
 __pycache__/
+media/
+migrations/
