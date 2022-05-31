@@ -8,9 +8,11 @@
 {% block title %}Article List{% endblock %}
 
 {% block contents%}
-
+<div class="container">
+    <div class="row">
         <section class="py-5">
             <div class="container px-4 px-lg-5 mt-5">
+                <a class="btn btn-primary float-right" href="{% url 'article:article_create' %}">新規投稿</a>
                 <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
                     {% for article in article_list %}
                     <div class="col mb-5">
@@ -44,9 +46,7 @@
                 </div>
             </div>
         </section> 
-
-<div class="container">
-    <div class="row">        
+     
         <!-- ページネーション処理 -->
         {% if is_paginated %}
             <ul class="pagination">

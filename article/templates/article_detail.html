@@ -12,6 +12,9 @@
 <div class="container my-div-style" >
     <div class="row">
         <div class="col-lg-8">
+            {% if user.username == object.user.username %}
+            <a class="btn btn-success mb-3" href="{% url 'article:article_update' object.pk %}">編集</a>
+            {% endif %}
             <!-- Post content-->
             <article>
                 <!-- Post header-->
