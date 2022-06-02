@@ -13,7 +13,7 @@ services:
 
   web:
     build: ./development
-    command: python3 manage.py runserver 0.0.0.0:8000
+    command: bash -c "python /workspace/manage.py makemigrations && python /workspace/manage.py migrate &&  python3 manage.py runserver 0.0.0.0:8000"
     tty: true
     volumes:
       - .:/workspace
