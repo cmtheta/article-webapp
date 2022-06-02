@@ -1,13 +1,13 @@
 from django import forms
 from django.core.mail import EmailMessage
 
-from article.models import Article
+from article.models import Article, Comment
 
 class InquiryForm(forms.Form):
     name = forms.CharField(label='お名前', max_length=30)
     email = forms.EmailField(label='メールアドレス')
     title = forms.CharField(label='タイトル', max_length=30)
-    message = forms.CharField(label='メッセージ', widget=forms.Textarea)
+    message = forms.CharField(label='内容', widget=forms.Textarea)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -54,5 +54,13 @@ class ArticleCreateForm(forms.ModelForm):
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
 
+class CommentCreateForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ('text',)
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form-control'
 
