@@ -14,6 +14,8 @@
 ```
 docker-compose up
 ```
+最初は起動に失敗するのでCtrl+Cで停止して、もう一度起動してください。
+
 接続先：[localhost:8001](http://localhost:8001/)  
 #### 停止
 ```
