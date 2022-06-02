@@ -69,7 +69,7 @@ class ArticleUpdateView(LoginRequiredMixin, generic.UpdateView):
     form_class = ArticleCreateForm
 
     def get_success_url(self):
-        return reverse_lazy('article:article_detail', kwargs={'pk':self.kwargs['pk']})
+        return reverse_lazy('article:article_detail', kwargs={'article_id':self.kwargs['pk']})
     
     def form_valid(self, form):
         # messages.success(self.request, '記事を更新しました')
