@@ -1,11 +1,12 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views import generic
-from .forms import InquiryForm, ArticleCreateForm
+from .forms import InquiryForm, ArticleCreateForm, CommentCreateForm
 import logging
+from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .models import Article
+from .models import Article, Comment
 
 # Create your views here.
 
@@ -25,20 +26,25 @@ class InquiryView(generic.FormView):
         logger.info(('Inquiry sent by {}'.format(form.cleaned_data['name'])))
         return super().form_valid(form)
         
-class ArticleListView(LoginRequiredMixin, generic.ListView):
+class ArticleListView(generic.ListView):
     model = Article
     template_name = 'article_list.html'
-    paginate_by = 4
+    paginate_by = 20
 
     def get_queryset(self):
-        # articles = Article.objects.filter(user=self.request.user).order_by('-created_at')
         articles = Article.objects.order_by('-created_at')
         return articles
 
-class ArticleDetailView(LoginRequiredMixin, generic.DetailView):
-    model = Article
-    template_name = 'article_detail.html'
-    pk_url_kwarg = 'pk'
+def article_detail(request, article_id):
+    article = get_object_or_404(Article, pk=article_id)
+    comments = Comment.objects.filter(commented_to=article_id).all()
+    comment_form = CommentCreateForm()
+
+    return render(request, "article_detail.html", {
+        'article': article,
+        'comments': comments,
+        'comment_form': comment_form,
+    })
 
 class ArticleCreateView(LoginRequiredMixin, generic.CreateView):
     model = Article
@@ -66,10 +72,27 @@ class ArticleUpdateView(LoginRequiredMixin, generic.UpdateView):
         return reverse_lazy('article:article_detail', kwargs={'pk':self.kwargs['pk']})
     
     def form_valid(self, form):
-        messages.success(self.request, '記事を更新しました')
+        # messages.success(self.request, '記事を更新しました')
         return super().form_valid(form)
 
     def form_invalid(self, form):
-        messages.error(self.request, '記事の更新に失敗しました')
+        # messages.error(self.request, '記事の更新に失敗しました')
         return super().form_invalid(form)
 
+@login_required
+def comment_new(request, article_id):
+    article = get_object_or_404(Article, pk=article_id)
+
+    form = CommentCreateForm(request.POST)
+    if form.is_valid():
+        comment = form.save(commit=False)
+        comment.commented_to = article
+        comment.commented_by = request.user
+        comment.save()
+        # messages.add_message(request, messages.SUCCESS,
+        #                      "コメントを投稿しました。")
+    else:
+        pass
+        # messages.add_message(request, messages.ERROR,
+        #                      "コメントの投稿に失敗しました。")
+    return redirect('article:article_detail', article_id=article_id)
