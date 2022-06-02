@@ -13,7 +13,7 @@ services:
 
   web:
     build: ./development
-    # command: python3 manage.py runserver 0.0.0.0:8000
+    command: python3 manage.py runserver 0.0.0.0:8000
     tty: true
     volumes:
       - .:/workspace
